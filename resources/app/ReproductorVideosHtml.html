@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Reproductor de Videos</title>
+  <style>
+    body {
+      background-color: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      margin: 0;
+      padding-top: 20px;
+      font-family: Arial, sans-serif;
+    }
+
+    .video-container {
+      position: relative;
+      width: 80%;
+      max-width: 900px;
+      margin-top: 20px;
+    }
+
+    video {
+      width: 100%;
+      border: 5px solid #00ffcc;
+      border-radius: 20px;
+      background-color: black;
+      display: block;
+      z-index: 1;
+      position: relative;
+    }
+
+    h2 {
+      margin-top: 20px;
+      min-height: 28px;
+      text-align: center;
+    }
+
+    .volver-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 12px 14px;
+      background-color: #00ffcc2d;
+      color: #111;
+      font-size: 18px;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: 0.3s ease;
+      z-index: 10;
+      box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    }
+
+    .volver-btn:hover {
+      background-color: #00ddaa;
+    }
+
+    .thumbnail-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+      justify-content: center;
+      max-width: 900px;
+    }
+
+    .thumbnail {
+      width: 140px;
+      height: 80px;
+      object-fit: cover;
+      border: 3px solid #00ffcc60;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .thumbnail:hover {
+      transform: scale(1.05);
+      border-color: #00ffcc;
+    }
+
+    /* Selector de carpetas */
+    #folderSelector {
+      background-color: #222;
+      color: #00ffcc;
+      border: 2px solid #00ffcc;
+      border-radius: 10px;
+      padding: 6px 12px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    #folderSelector option {
+      background-color: #111;
+      color: white;
+    }
+
+    label {
+      color: #00ffcc;
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+
+  <label for="folderSelector">Seleccionar carpeta:</label>
+  <select id="folderSelector"></select>
+
+  <div class="video-container">
+    <a href="MenuVideos.html" class="volver-btn">⬅</a>
+    <video id="videoPlayer" controls></video>
+  </div>
+  <h2 id="videoTitle"></h2>
+  <div id="thumbnailGallery" class="thumbnail-gallery"></div>
+
+  <script>
+    const fs = require('fs');
+    const path = require('path');
+
+    const baseDir = path.join(__dirname, 'EntregaTotems', 'Videos');
+
+    const videoPlayer = document.getElementById('videoPlayer');
+    const videoTitle = document.getElementById('videoTitle');
+    const gallery = document.getElementById('thumbnailGallery');
+    const folderSelector = document.getElementById('folderSelector');
+
+    let allVideos = [];
+    let currentIndex = -1;
+
+    const availableFolders = fs.readdirSync(baseDir, { withFileTypes: true })
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name);
+
+    availableFolders.forEach(folder => {
+      const option = document.createElement('option');
+      option.value = folder;
+      option.textContent = folder;
+      folderSelector.appendChild(option);
+    });
+
+    function loadVideosFromFolder(folderName) {
+      allVideos = [];
+      gallery.innerHTML = '';
+
+      const folderPath = path.join(baseDir, folderName);
+      const videos = fs.readdirSync(folderPath)
+        .filter(file => ['.mp4', '.webm', '.ogg'].includes(path.extname(file).toLowerCase()))
+        .map(file => ({
+          src: `./EntregaTotems/Videos/${folderName}/${file}`,
+          title: file
+        }));
+
+      if (videos.length === 0) {
+        videoTitle.textContent = 'No hay videos en esta carpeta.';
+        videoPlayer.src = '';
+        return;
+      }
+
+      allVideos = videos;
+
+      videos.forEach((video, i) => {
+        const thumb = document.createElement('video');
+        thumb.src = video.src;
+        thumb.className = 'thumbnail';
+        thumb.muted = true;
+        thumb.preload = 'metadata';
+
+        thumb.addEventListener('loadeddata', () => {
+          thumb.currentTime = 1;
+        });
+
+        thumb.addEventListener('click', () => {
+          playVideo(i);
+        });
+
+        gallery.appendChild(thumb);
+      });
+
+      videoTitle.textContent = '';
+      videoPlayer.src = '';
+      currentIndex = -1;
+    }
+
+    function playVideo(index) {
+      currentIndex = index;
+      const video = allVideos[index];
+      videoPlayer.src = video.src;
+      videoTitle.textContent = video.title;
+      videoPlayer.play();
+    }
+
+    // Al terminar un video, pasa automáticamente al siguiente y hace loop
+    videoPlayer.addEventListener('ended', () => {
+      if (allVideos.length === 0) return;
+      currentIndex = (currentIndex + 1) % allVideos.length;
+      playVideo(currentIndex);
+    });
+
+    folderSelector.addEventListener('change', () => {
+      loadVideosFromFolder(folderSelector.value);
+    });
+
+    if (availableFolders.length > 0) {
+      folderSelector.value = availableFolders[0];
+      loadVideosFromFolder(availableFolders[0]);
+    } else {
+      videoTitle.textContent = 'No se encontraron carpetas de videos.';
+    }
+  </script>
+</body>
+</html>

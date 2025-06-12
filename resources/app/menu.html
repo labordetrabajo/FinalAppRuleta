@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Menu</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 60px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .menu button {
+      padding: 25px 60px;
+      font-size: 28px;
+      background-color: #222;
+      border: 3px solid #00ffcc;
+      color: #00ffcc;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .menu button:hover {
+      background-color: #00ffcc;
+      color: #111;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Bienvenidos</h1>
+  <div class="menu">
+    <button onclick="location.href='MenuRuleta.html'">Ruleta</button>
+    <button onclick="location.href='MenuTragamonedas.html'">Tragamonedas</button>
+    <button onclick="location.href='MenuVideos.html'">Videos</button>
+     <button onclick="cerrarApp()">Cerrar app</button>
+  </div>
+ <script>
+    function cerrarApp() {
+      window.close();
+      setTimeout(() => {
+        alert('No se pudo cerrar la ventana automáticamente. Por favor, cerrá la pestaña manualmente.');
+      }, 500);
+    }
+  </script>
+
+</body>
+</html>

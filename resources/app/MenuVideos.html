@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Menú de Videos</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 60px;
+    }
+
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .menu-button {
+      background-color: #00ffcc;
+      color: #111;
+      padding: 20px 40px;
+      font-size: 24px;
+      border: none;
+      border-radius: 15px;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .menu-button:hover {
+      background-color: #00ddaa;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Menú de Videos</h1>
+
+  <div class="button-container">
+    <a href="./ReproductorVideosHtml.html" class="menu-button">▶ Reproducir Videos</a>
+    <a href="./menu.html" class="menu-button">⬅ Volver</a>
+  </div>
+
+</body>
+</html>

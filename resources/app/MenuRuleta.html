@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ruleta</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #111;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      margin: 0;
+      padding-top: 50px;
+    }
+
+    h1 {
+      font-size: 48px;
+      margin-bottom: 60px;
+    }
+
+    .menu {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+      margin-bottom: 60px;
+    }
+
+    /* Estilos para que <a> se vean como botones */
+    .menu a {
+      display: inline-block;
+      padding: 25px 60px;
+      font-size: 28px;
+      background-color: #222;
+      border: 3px solid #00ffcc;
+      color: #00ffcc;
+      border-radius: 15px;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .menu a:hover {
+      background-color: #00ffcc;
+      color: #111;
+      transform: scale(1.05);
+    }
+
+    .back-button {
+      font-size: 22px;
+      padding: 15px 30px;
+      margin-top: auto;
+      margin-bottom: 40px;
+      display: inline-block;
+      background-color: transparent;
+      border: none;
+      color: #00ffcc;
+      cursor: pointer;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .back-button:hover {
+      color: #00ffaa;
+      transform: scale(1.1);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Ruleta</h1>
+
+  <div class="menu">
+    <a href="EntregaTotems/Juegos/base%20de%20datos/Alvear/Ruleta/alvearruletafinal-master/index.html">Alvear</a>
+    <a href="./EntregaTotems/Juegos/base de datos/Pernod/Ruleta/pernodruletafinal-master/index.html">Pernod</a>
+    <a href="./EntregaTotems/Juegos/base de datos/Peñaflor/Ruleta/penaflorfinalruleta-master/index.html">Peñaflor</a>
+    <a href="./EntregaTotems/Juegos/base de datos/Campari/Ruleta/camparifinalruleta-master/index.html">Campari</a>
+    <a href="menu.html" class="back-button">←</a>
+  </div>
+
+</body>
+</html>

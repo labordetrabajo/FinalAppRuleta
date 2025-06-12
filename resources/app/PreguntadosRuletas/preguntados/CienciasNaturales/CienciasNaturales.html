@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Trivia Ciencias Naturales</title>
+    <link rel="stylesheet" href="./style/style.css" />
+    <style>
+        #modal {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(4, 134, 11, 0.95);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px #00000090;
+            font-size: 1.5em;
+            text-align: center;
+            z-index: 9999;
+            display: none;
+        }
+        #modal.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="startScreen">
+        <h1>Responde sobre Ciencias Naturales</h1>
+        <button class="btn" onclick="startGame()">Empezar a jugar</button>
+    </div>
+
+    <div class="container hidden" id="gameScreen">
+        <div class="score">Puntuación: <span id="score">0</span></div>
+        <div class="timer">Tiempo: <span id="timer">10</span>s</div>
+        <h2 id="question"></h2>
+        <div id="answers"></div>
+    </div>
+
+    <div id="modal"></div>
+
+    <div class="logo-container">
+        <img id="logo" src="./imagenes/pngwing.com (1).png" alt="Logo de Ciencias Naturales" />
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "¿Cuál es la función principal del sistema respiratorio?",
+                answers: [
+                    "Transportar nutrientes",
+                    "Eliminar desechos",
+                    "Intercambiar gases",
+                    "Regular la temperatura corporal"
+                ],
+                correct: 2,
+            },
+            {
+                question: "¿Qué tipo de animales ponen huevos?",
+                answers: ["Mamíferos", "Aves", "Reptiles", "Ambos B y C"],
+                correct: 3,
+            },
+            {
+                question: "¿Qué planeta es conocido como el planeta rojo?",
+                answers: ["Venus", "Saturno", "Marte", "Júpiter"],
+                correct: 2,
+            },
+            {
+                question: "¿Qué órgano del cuerpo humano bombea la sangre?",
+                answers: ["Cerebro", "Hígado", "Pulmones", "Corazón"],
+                correct: 3,
+            },
+            {
+                question: "¿Cómo se llama el proceso por el cual las plantas hacen su alimento?",
+                answers: ["Germinación", "Fotosíntesis", "Respiración", "Digestión"],
+                correct: 1,
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 10;
+        let timer;
+
+        function startGame() {
+            document.getElementById("startScreen").classList.add("hidden");
+            document.getElementById("gameScreen").classList.remove("hidden");
+            resetTimer();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            if (currentQuestion < questions.length) {
+                document.getElementById("question").innerText = questions[currentQuestion].question;
+                let answersDiv = document.getElementById("answers");
+                answersDiv.innerHTML = "";
+                questions[currentQuestion].answers.forEach((ans, index) => {
+                    let btn = document.createElement("button");
+                    btn.innerText = ans;
+                    btn.className = "btn";
+                    btn.onclick = () => checkAnswer(index);
+                    answersDiv.appendChild(btn);
+                });
+                startTimer();
+            } else {
+                endGame();
+            }
+        }
+
+        function checkAnswer(index) {
+            clearInterval(timer);
+            if (index === questions[currentQuestion].correct) {
+                score += 10;
+                showModal("¡Correcto! +10 puntos");
+            } else {
+                showModal(
+                    "Incorrecto. La respuesta correcta era: " +
+                        questions[currentQuestion].answers[questions[currentQuestion].correct]
+                );
+            }
+            document.getElementById("score").innerText = score;
+            currentQuestion++;
+            if (currentQuestion < questions.length) {
+                setTimeout(() => {
+                    resetTimer();
+                    showQuestion();
+                }, 2000);
+            } else {
+                endGame();
+            }
+        }
+
+        function showModal(message, isFinal = false) {
+            let modal = document.getElementById("modal");
+            modal.innerHTML = `<div>${message}</div>`;
+            if (message.includes("Ganaste una escarapela")) {
+                modal.innerHTML +=
+                    `<br><img src="./imagenes/Escarapela_argentina.svg" alt="Escarapela" style="width:100px;margin-top:15px;">`;
+            }
+            modal.classList.add("show");
+
+            setTimeout(() => {
+                modal.classList.remove("show");
+                if (isFinal) {
+                    window.location.href = "../../index.html";
+                }
+            }, isFinal ? 4000 : 2000);
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                document.getElementById("timer").innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    showModal("¡Tiempo agotado!");
+                    currentQuestion++;
+                    if (currentQuestion < questions.length) {
+                        setTimeout(() => {
+                            resetTimer();
+                            showQuestion();
+                        }, 2000);
+                    } else {
+                        endGame();
+                    }
+                }
+            }, 1000);
+        }
+
+        function resetTimer() {
+            timeLeft = 10;
+            document.getElementById("timer").innerText = timeLeft;
+        }
+
+        function endGame() {
+            const maxScore = questions.length * 10;
+            let finalMessage = `¡Juego terminado! Tu puntuación final es: ${score}`;
+
+            if (score >= maxScore / 2) {
+                finalMessage += "<br>🎉 ¡Felicitaciones! Ganaste una escarapela 🎖️";
+            } else if (score === 0) {
+                finalMessage += "<br>😞 Puntos insuficientes, mejor suerte la próxima.";
+            } else {
+                finalMessage += "<br>Intenta mejorar tu puntaje la próxima vez.";
+            }
+
+            showModal(finalMessage, true);
+
+            document.getElementById("gameScreen").classList.add("hidden");
+            document.getElementById("startScreen").classList.remove("hidden");
+            currentQuestion = 0;
+            score = 0;
+            timeLeft = 10;
+            document.getElementById("score").innerText = score;
+            document.getElementById("timer").innerText = timeLeft;
+        }
+    </script>
+</body>
+</html>
